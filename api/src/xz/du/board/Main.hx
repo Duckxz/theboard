@@ -17,6 +17,7 @@ class Main {
     } catch(e: php.Exception) {
     }
     try {
+      // discriminating XHR from generic browser visit
       if(!array_key_exists('api-access-method',getallheaders()) || getallheaders()['api-access-method'] == "" || getallheaders()['api-access-method'] == " " || getallheaders()['api-access-method'] != 'api-call') {
         var displayed_custom_message: Bool = false;
 #if board_board

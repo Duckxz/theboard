@@ -42,6 +42,8 @@ class Board {
           LeaveBoard();
         case "UpdateBoard":
           UpdateBoard();
+        case "BoardInfo":
+          BoardInfo();
 #elseif board_user
        case "RegisterUser":
           RegisterUser();
@@ -266,6 +268,41 @@ class Board {
       throw new php.Exception("unauthorized");
     }
   }
+
+  //  /api/board/?method=BoardInfo
+  //    api-boardinfo-user: <username>
+  //    api-boardinfo-board: <boardname>
+  //  returns: {
+  //    ok: true | false,
+  //    msg: <json board data> | <errormessage>
+  //  }
+  public static function BoardInfo(): Void {
+      var redis: Redis = new Redis();
+      if(!redis.connect("localhost")) {
+        throw new php.Exception("unable to connect to Redis DB");
+      }
+      if(TokenValidity()) {
+        if(array_key_exists("api-boardinfo-user",getallheaders()) && array_key_exists("api-boardinfo-board",getallheaders())) {
+          redis.select(3);
+          if(!redis.get(getallheaders()['api-boardinfo-board'])) {
+            throw new php.Exception("board '"+getallheaders()['api-boardinfo-board']+"' does not exist");
+          }
+          redis.select(1);
+          if(redis.sIsMember(getallheaders()['api-boardinfo-user']+"_boards",getallheaders()['api-boardinfo-board'])) {
+            redis.select(3);
+            var resp = {
+              ok: true,
+              msg: redis.get(getallheaders()['api-boardinfo-board'])
+            }
+            println(Json.stringify(resp));
+          } else {
+            throw new php.Exception("you're not a participant of board '"+getallheaders()['api-boardinfo-board']+"'");
+          }
+        } else {
+          throw new php.Exception("missing header fields");
+        }
+      }
+  }
 #elseif board_user
   //  /api/user/?method=RegisterUser
   //    api-registration-token: <reg token>
@@ -339,7 +376,7 @@ class Board {
             throw new php.Exception("user not found");
           } else {
             if(Sha256.encode(getallheaders()['api-login-password']) == Json.parse(user).password) {
-	            var sessiontoken = getallheaders()['api-login-username']+':'+Base64.encode(Bytes.ofString(Sha256.encode(Json.parse(user).id+":"+Json.parse(user).name)+Sha256.encode(DateTools.format(Date.now(),"%Y-%m-%d|%H:%M:%S"))));
+              var sessiontoken = getallheaders()['api-login-username']+':'+Base64.encode(Bytes.ofString(Sha256.encode(Json.parse(user).id+":"+Json.parse(user).name)+Sha256.encode(DateTools.format(Date.now(),"%Y-%m-%d|%H:%M:%S"))));
               redis.set(sessiontoken,"1");
               setcookie('board-user-session',sessiontoken,0,"/");
               redis.select(1);
