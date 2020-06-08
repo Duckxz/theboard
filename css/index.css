@@ -1,0 +1,6 @@
+.burndown_chart {
+  display: block;
+  overflow: hidden;
+  width: 800px;
+  height: 600px;
+}

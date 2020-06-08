@@ -1,0 +1,13 @@
+-D board_board
+-p src
+-main xz.du.board.Main
+-dce full
+-php board
+
+--next
+
+-D board_user
+-p src
+-main xz.du.board.Main
+-dce full
+-php user
