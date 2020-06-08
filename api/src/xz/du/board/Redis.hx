@@ -32,7 +32,7 @@ extern class Redis {
   function ping(?message: String):Bool;
   function echo(message: String):String;
   function get(key: String):EitherType<String,Bool>; // either string or bool
-  function set(key: String, value: String, ?opts: Array<String>):Bool;
+  function set(key: String, value: String, ?opts: NativeArray):Bool;
   function setEx(key: String, lifetime: Int, value: String):Bool;
   function del(keys: Rest<String>):Int;
   function pSetEx(key: String, lifetime: Int, value: String):Bool;
@@ -43,7 +43,7 @@ extern class Redis {
   function incrByFloat(key: String, amount: Float):Float;
   function decr(key: String):Int;
   function decrBy(key: String, amount: Int):Int;
-  function mGet(keys: Array<String>): Array<String>;
+  function mGet(keys: NativeArray): NativeArray;
   function bgSave():Void;
   function config(operation: String, key: String, ?value: String):EitherType<NativeAssocArray<Any>,Bool>;
   function dbSize():Int;
@@ -52,8 +52,8 @@ extern class Redis {
   function info():NativeAssocArray<String>; // returns an AA
   function lastSave():Int;
   function save():Bool;
-  function scan(?ref: Ref<Any>, ?pat: Int, ?count: Int):EitherType<Array<String>,Bool>;
-  function keys(?pat: String):Array<String>;
+  function scan(?ref: Ref<Any>, ?pat: Int, ?count: Int):EitherType<NativeArray,Bool>;
+  function keys(?pat: String):NativeArray;
   function expireAt(key: String, stamp: Int):Bool;
   function rename(key: String, key2: String):Bool;
   function move(key: String, db: Int): Bool;
@@ -65,28 +65,28 @@ extern class Redis {
   function hGet(hash: String, key: String):EitherType<String,Bool>; // String or Bool(false)
   function hLen(hash: String): Any; // Int or Bool(false)
   function hDel(hash: String, key: String, key1: String, key2: String, key3: String, key4: String, key5: String):EitherType<Int,Bool>; // Int or Bool(false)
-  function hKeys(hash: String):Array<String>;
-  function hVals(hash: String):Array<Any>;
-  function hGetAll(hash: String):Array<String>;
+  function hKeys(hash: String):NativeArray;
+  function hVals(hash: String):NativeArray;
+  function hGetAll(hash: String):NativeArray;
   function hExists(hash: String, key: String):Bool;
   function hIncrBy(hash: String, key: String, value: Int):Int;
   function hIncrByFloat(hash: String, key: String, value: Float):Float;
   function hMSet(hash: String, values: Map<String,Any>):Bool;
-  function hMGet(hash: String, fields: Array<String>):Map<String,Any>;
-  function hScan(hash: String, ref: Ref<Any>, pat: String, count: Int):Array<String>;
+  function hMGet(hash: String, fields: NativeArray):Map<String,Any>;
+  function hScan(hash: String, ref: Ref<Any>, pat: String, count: Int):NativeArray;
   function hStrLen(hash: String, field: String):Int;
-  function blPop(key_array: Array<String>, timeout: Int ):Array<String>; // it's best to pass an array of keys
-  function brPop(key_array: Array<String>, timeout: Int ):Array<String>; // it's best to pass an array of keys
+  function blPop(key_NativeArray: NativeArray, timeout: Int ):NativeArray; // it's best to pass an NativeArray of keys
+  function brPop(key_NativeArray: NativeArray, timeout: Int ):NativeArray; // it's best to pass an NativeArray of keys
   function bRPopLPush(srckey: String, dstkey: String, timeout: Int):EitherType<String,Bool>; // String or Bool(false)
   function lIndex(list: String, index: Int): Any; // String or Bool(false)
   function lInsert(list: String, position: RedisEnums, pivot: Int, index: Int):Int;
   function lPop(list: String):EitherType<String,Bool>; // String or Bool(false)
   function lPush(list: String, value: Any):EitherType<Int,Bool>;
   function lPushx(list: String, value: String):EitherType<Int,Bool>;
-  function lRange(list: String, start: Int, end: Int):Array<Any>;
+  function lRange(list: String, start: Int, end: Int):NativeArray;
   function lRem(list: String, value: String, count: Int):EitherType<Int,Bool>;
   function lSet(list: String, index: Int, value: Any): Bool;
-  function lTrim(list: String, start: Int, stop: Int):EitherType<Array<Any>,Bool>; // either Array<Any> or Bool
+  function lTrim(list: String, start: Int, stop: Int):EitherType<NativeArray,Bool>; // either NativeArray<Any> or Bool
   function rPop(list: String):EitherType<String,Bool>;
   function rPopLPush(srckey: String, dstkey: String):EitherType<String,Bool>;
   function rPush(list: String, value: Any):EitherType<Int,Bool>;
@@ -94,17 +94,17 @@ extern class Redis {
   function lLen(list: String):EitherType<Int,Bool>;
   function sAdd(set: String, value: Any):Int;
   function sCard(set: String):Int;
-  function sDiff(set: String, restsets: Rest<String>): Array<String>;
+  function sDiff(set: String, restsets: Rest<String>): NativeArray;
   function sDiffStore(dstset: String, restsets: Rest<String>):EitherType<Int,Bool>;
-  function sInter(set: String, restsets: Rest<String>):Array<String>;
+  function sInter(set: String, restsets: Rest<String>):NativeArray;
   function sInterStore(dstset: String, set: String, restsets: Rest<String>): Any;
   function sIsMember(set: String, member: String):Bool;
-  function sMembers(set: String):Array<String>;
+  function sMembers(set: String):NativeArray;
   function sMove(srcset: String, dstset: String, member: String):Bool;
-  function sPop(set: String, ?count: Int):EitherType<Array<Any>,Bool>;
+  function sPop(set: String, ?count: Int):EitherType<NativeArray,Bool>;
   function sRandMember(set: String, ?count: Int):EitherType<String,Bool>;
   function sRem(set: String, member: String):Int;
-  function sUnion(set: String, restsets: Rest<String>):Array<String>;
+  function sUnion(set: String, restsets: Rest<String>):NativeArray;
   function sUnionStore(dstset: String, restsets: Rest<String>):EitherType<Int,Bool>;
-  function sScan(set: String, iterator: Ref<Any>):EitherType<Array<Any>,Bool>;
+  function sScan(set: String, iterator: Ref<Any>):EitherType<NativeArray,Bool>;
 }
